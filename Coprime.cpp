@@ -36,15 +36,15 @@ cout<<max_val<<endl;
 
 using namespace std;
 int main(){
-    int T;
-    scanf("%d",&T);
-    while(T--){
+    int t;
+    cin>>t;
+    while(t--){
         int n;
-        scanf("%d",&n);
+       cin>>n;
         map<int,int>t;
         for(int i=0;i<n;++i){
             int c;
-            scanf("%d",&c);
+           cin>>c;
             t[c]=i+1;
         }
         int a=-1;
@@ -55,4 +55,6 @@ int main(){
                 }
             }
         }
-        printf("%d\n",a);}}
+       cout<<a<<endl;
+    }
+}

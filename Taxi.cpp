@@ -1,4 +1,6 @@
-#include<bits/stdc++.h>
+#include<iostream>
+#include<vector>
+#include<string>
 using namespace std;
 int main(){
     int n;
@@ -21,24 +23,16 @@ else c4++;
 
 }
 int taxis=0;
-// group of 4
 taxis+= c4;
-    
-
-    //group of 3+ group of 1
     taxis+= c3;
 c1= max(0, c1-c3);
 
-// pair group of 2
 taxis+= c2/2;
 c2%=2;
-
-// one remaining group of 2
 if(c2){
     taxis++;
     c1= max(0, c1-2);
 }
-//Remaining group of 1
 taxis+= (c1+3)/4;
 cout<<taxis<<endl;
 return 0;

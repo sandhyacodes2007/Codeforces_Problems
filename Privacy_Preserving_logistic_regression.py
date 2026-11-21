@@ -54,11 +54,11 @@ def train_plaintext_model():
 def create_ckks_context():
     context = ts.context(
         ts.SCHEME_TYPE.CKKS,
-        poly_modulus_degree=16384,                       # bigger ring -> more depth budget
-        coeff_mod_bit_sizes=[60, 40, 40, 40, 40, 60]      # modulus chain (your "P/Q"), 4 usable levels
+        poly_modulus_degree=16384,      //                 # bigger ring -> more depth budget
+        coeff_mod_bit_sizes=[60, 40, 40, 40, 40, 60] //     # modulus chain (your "P/Q"), 4 usable levels
     )
-    context.generate_galois_keys()
-    context.global_scale = 2 ** 40
+    context.generate_galois_keys()//
+    context.global_scale = 2 ** 40//
     return context
 
 

@@ -27,7 +27,7 @@ int main(){
             }
         }
 
-        b = max(b, cur);l
+        b = max(b, cur);
         cout << b << "\n";
     }
     return 0;

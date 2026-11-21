@@ -1,0 +1,195 @@
+-- =========================================================
+-- EXPERIMENT 1: SQL DDL and DML Operations
+-- Aim: CREATE, INSERT, UPDATE, ALTER, TRUNCATE, DROP
+-- =========================================================
+
+CREATE DATABASE IF NOT EXISTS LabDB;
+USE LabDB;
+
+-- CREATE TABLE
+CREATE TABLE Student (
+    StudentID INT,
+    Name VARCHAR(50),
+    Age INT,
+    Marks INT,
+    DeptID INT
+);
+
+-- INSERT (DML)
+INSERT INTO Student (StudentID, Name, Age, Marks, DeptID) VALUES
+(1, 'Aman', 20, 85, 1),
+(2, 'Riya', 21, 90, 2),
+(3, 'Karan', 19, 75, 1),
+(4, 'Sneha', 22, 60, 3),
+(5, 'Vikas', 20, 95, 2);
+
+-- ALTER TABLE (add a new column)
+ALTER TABLE Student ADD Email VARCHAR(100);
+
+-- UPDATE
+UPDATE Student SET Email = 'aman@example.com' WHERE StudentID = 1;
+
+-- Verify
+SELECT * FROM Student;
+
+-- TRUNCATE (uncomment to test — removes all rows, keeps structure)
+-- TRUNCATE TABLE Student;
+
+-- DROP (uncomment to test — deletes the table entirely)
+-- DROP TABLE Student;
+
+
+-- =========================================================
+-- EXPERIMENT 2: Integrity Constraints
+-- Aim: PRIMARY KEY, NOT NULL, UNIQUE, CHECK, DEFAULT
+-- =========================================================
+
+DROP TABLE IF EXISTS Student;
+
+CREATE TABLE Student (
+    StudentID INT PRIMARY KEY,
+    Name VARCHAR(50) NOT NULL,
+    Age INT CHECK (Age >= 15),
+    Email VARCHAR(100) UNIQUE,
+    Marks INT DEFAULT 0,
+    DeptID INT
+);
+
+INSERT INTO Student (StudentID, Name, Age, Email, Marks, DeptID) VALUES
+(1, 'Aman', 20, 'aman@example.com', 85, 1),
+(2, 'Riya', 21, 'riya@example.com', 90, 2),
+(3, 'Karan', 19, 'karan@example.com', 75, 1),
+(4, 'Sneha', 22, 'sneha@example.com', 60, 3),
+(5, 'Vikas', 20, 'vikas@example.com', 95, 2);
+
+-- This will FAIL (duplicate primary key) — proves PRIMARY KEY works
+-- INSERT INTO Student (StudentID, Name) VALUES (1, 'Test');
+
+-- This will FAIL (NULL not allowed) — proves NOT NULL works
+-- INSERT INTO Student (StudentID, Name) VALUES (6, NULL);
+
+-- This will use DEFAULT for Marks since it's omitted
+INSERT INTO Student (StudentID, Name, Age, Email, DeptID) VALUES
+(6, 'Neha', 18, 'neha@example.com', 3);
+
+SELECT * FROM Student;
+
+
+-- =========================================================
+-- EXPERIMENT 3: SQL Clauses and Foreign Key
+-- Aim: SELECT, FROM, WHERE, GROUP BY, HAVING, ORDER BY, FOREIGN KEY
+-- =========================================================
+
+CREATE TABLE Department (
+    DeptID INT PRIMARY KEY,
+    DeptName VARCHAR(50)
+);
+
+INSERT INTO Department VALUES
+(1, 'Computer Science'),
+(2, 'Electronics'),
+(3, 'Mechanical');
+
+-- Add FOREIGN KEY referencing Department
+ALTER TABLE Student
+ADD CONSTRAINT fk_dept
+FOREIGN KEY (DeptID) REFERENCES Department(DeptID);
+
+-- SELECT with WHERE
+SELECT Name, Marks FROM Student WHERE Marks > 70;
+
+-- GROUP BY with HAVING
+SELECT DeptID, COUNT(*) AS TotalStudents
+FROM Student
+GROUP BY DeptID
+HAVING COUNT(*) >= 1;
+
+-- ORDER BY
+SELECT Name, Marks FROM Student ORDER BY Marks DESC;
+
+
+-- =========================================================
+-- EXPERIMENT 4: GROUP BY and Aggregate Functions
+-- Aim: SUM(), COUNT(), AVG(), MIN(), MAX()
+-- =========================================================
+
+SELECT
+    DeptID,
+    COUNT(*) AS NumStudents,
+    SUM(Marks) AS TotalMarks,
+    AVG(Marks) AS AvgMarks,
+    MIN(Marks) AS MinMarks,
+    MAX(Marks) AS MaxMarks
+FROM Student
+GROUP BY DeptID;
+
+
+-- =========================================================
+-- EXPERIMENT 5: SQL JOIN Operations
+-- Aim: INNER, LEFT, RIGHT, FULL OUTER, NATURAL JOIN
+-- =========================================================
+
+-- INNER JOIN
+SELECT s.Name, d.DeptName
+FROM Student s
+INNER JOIN Department d ON s.DeptID = d.DeptID;
+
+-- LEFT OUTER JOIN
+SELECT s.Name, d.DeptName
+FROM Student s
+LEFT JOIN Department d ON s.DeptID = d.DeptID;
+
+-- RIGHT OUTER JOIN
+SELECT s.Name, d.DeptName
+FROM Student s
+RIGHT JOIN Department d ON s.DeptID = d.DeptID;
+
+-- FULL OUTER JOIN
+-- MySQL has no native FULL OUTER JOIN, so simulate with UNION
+SELECT s.Name, d.DeptName
+FROM Student s
+LEFT JOIN Department d ON s.DeptID = d.DeptID
+UNION
+SELECT s.Name, d.DeptName
+FROM Student s
+RIGHT JOIN Department d ON s.DeptID = d.DeptID;
+
+-- NATURAL JOIN (works because both tables share column name DeptID)
+SELECT Name, DeptName
+FROM Student
+NATURAL JOIN Department;
+
+
+-- =========================================================
+-- EXPERIMENT 6: SQL Set Operations
+-- Aim: UNION, UNION ALL, INTERSECT, EXCEPT/MINUS
+-- =========================================================
+
+-- UNION (removes duplicates)
+SELECT Name FROM Student WHERE DeptID = 1
+UNION
+SELECT Name FROM Student WHERE Marks > 80;
+
+-- UNION ALL (keeps duplicates)
+SELECT Name FROM Student WHERE DeptID = 1
+UNION ALL
+SELECT Name FROM Student WHERE Marks > 80;
+
+-- INTERSECT (MySQL 8.0.31+ supports this natively)
+SELECT Name FROM Student WHERE DeptID = 1
+INTERSECT
+SELECT Name FROM Student WHERE Marks > 80;
+
+-- EXCEPT (MySQL 8.0.31+ supports this; older versions use MINUS-style workaround below)
+SELECT Name FROM Student WHERE DeptID = 1
+EXCEPT
+SELECT Name FROM Student WHERE Marks > 80;
+
+-- Workaround for older MySQL versions without INTERSECT/EXCEPT:
+-- INTERSECT equivalent:
+SELECT Name FROM Student WHERE DeptID = 1
+AND Name IN (SELECT Name FROM Student WHERE Marks > 80);
+
+-- EXCEPT equivalent:
+SELECT Name FROM Student WHERE DeptID = 1
+AND Name NOT IN (SELECT Name FROM Student WHERE Marks > 80);

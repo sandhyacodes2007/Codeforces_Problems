@@ -6,12 +6,16 @@ int main(){
     while(t--){
         int n;
         cin>>n;
-
-        vector<int>a(n);
+long long sum=0, mx=0;int cnt=0;
         for(int i=0; i<n; i++){
-            cin>>a[i];
-        }
+           long long x;
+           cin>>x;
+           sum+=x;
 
-        
+           mx= max(mx,x);
+           if(sum==2*mx)cnt++;
+        }
+        cout<<cnt<<endl;
     }
 }
+

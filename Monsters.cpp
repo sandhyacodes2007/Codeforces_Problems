@@ -16,7 +16,7 @@ int main(){
 int index;
 for(int i=0; i<n; i++){
 if(a[i]==k)index=i;
-else if(a[i]<k)
+else if(a[i]<k);
 
 }
 

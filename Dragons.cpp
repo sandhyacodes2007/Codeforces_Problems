@@ -17,7 +17,7 @@ for(int i=0; i<n; i++){
         ok= false;
         break;
         } 
-        else 
+    else 
         {
             s= s+y;
         ok= true;
